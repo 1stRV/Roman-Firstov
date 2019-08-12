@@ -1,0 +1,73 @@
+﻿*@Profile
+для сопоставления bean-компонентов с профилями dev , test , prod.
+
+*профиль prod(production на боевом сервере) профиль test(на тестовом сервере) 
+запускается командой java -jar -Dspring.profiles.active=prod application.jar(или на openshift)
+
+*профиль dev(локально для разработки)
+запускается стандартно @SpringBootApplication(по умолчанию Spring запускает профиль dev)
+
+*профиль unit(в тестах) 
+запускается в тестах с @ActiveProfiles
+
+Для каждого профиля можно прописать файлы appication.properties(dev,test,unit,) 
+
+*Команда-Dspring.profiles.active=test или 
+-Dspring.profiles.active=dev
+Ее записать в IDEA:
+в VM Options и снова запустить конфигурацию:
+
+Перейти в раздел Run | Edit Configurations...
+Перейти в раздел Configuration tab
+Перейти в раздел Environment в секцию VM options
+
+
+https://stackoverflow.com/questions/31038250/setting-active-profile-and-config-location-from-command-line-in-spring-boot
+
+There are two different ways you can add/override spring properties on the command line.
+
+Option 1: Java System Properties (VM Arguments)
+It's important that the -D parameters are before your application.jar otherwise they are not recognized.
+
+java -jar -Dspring.profiles.active=prod application.jar
+
+Option 2: Program arguments
+java -jar application.jar --spring.profiles.active=prod --spring.config.location=c:\config
+
+
+
+8)интсрукция запуска разных профилей:
+/prod запускается командой java -jar -Dspring.profiles.active=prod application.jar
+/dev запускается стандартно @SpringBootApplication(по умолчанию Spring запускает профиль dev)
+/unit запускается в тестах с @ActiveProfiles
+
+
+
+
+
+
+
+Варианты:
+
+1)@Component
+@Profile("dev")
+отображение bean-компонента в конкретный профиль
+
+dev
+компонент активный только во время разработки.будет присутствовать в контейнере только во время разработки. 
+
+Профили также можно настроить в XML. 
+
+
+Затем нужно активировать и настроить профили, чтобы эти бины были зарегистрированы в контейнере.
+
+
+
+Профили @Profile dev,prod,test,unit
+
+
+Например, рабочий вариант:
+в приложении не указать профили, в main/resources создать файл application.properties(настройка БД postgresq и миграции liquibase, во время запуска приложения создает таблицы, автогенерацию таблиц jpa.generate-ddl=false отключить, а в тестах указать профиль unit в @ActiveProfiles("unit"), в test/resources создать файл application-unit.properties(настройка БД H2 и миграции liquibase, во время запуска теста миграция накатывает таблицы, автогенерацию таблиц jpa.generate-ddl=false отключить).
+
+Автогенерировать таблицы jpa.generate-ddl=true может jpa, или может liquibase.
+ 
